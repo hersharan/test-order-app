@@ -117,5 +117,5 @@ input[type=date]:focus::-webkit-datetime-edit {
 }
 
 .search-dropdown.MuiFormControl-root{
-  width: 50%;
+  width: 30%;
 }

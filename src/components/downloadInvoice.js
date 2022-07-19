@@ -11,6 +11,7 @@ import { HEADERS } from "../constants";
 
 function DownloadInvoice() {
   const [search, setSearch] = useState("");
+  const [searchValue, setSearchValue] = useState("");
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
   const handleFromDate = (e) => {
@@ -21,10 +22,10 @@ function DownloadInvoice() {
   };
 
   const onDownload = async (type) => {
-    const url = "https://3a66-103-59-74-38.in.ngrok.io";
-    const path = "/api/v1/purchase-order/download-purchase-orders";
+    const url = "https://c0a3-103-208-71-81.in.ngrok.io";
+    const path = "api/v1/purchase-order/download-purchase-orders";
     const res = await fetch(
-      `${url}/${path}/?ingst=${search}&fromDate=${fromDate}&toDate=${toDate}`,
+      `${url}/${path}?ingst=${searchValue}&fromDate=${fromDate}&toDate=${toDate}`,
       {
         method: "GET",
         headers: HEADERS,
@@ -48,11 +49,18 @@ function DownloadInvoice() {
                 label="Search"
                 onChange={(e) => setSearch(e.target.value)}
               >
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+                <MenuItem value="GSTIN NO.">GSTIN No.</MenuItem>
               </Select>
             </FormControl>
+            <TextField
+              id="search-value"
+              label={`Enter ${search}`}
+              value={searchValue}
+              required
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+              }}
+            />
             <TextField
               label="From Date"
               value={fromDate}
@@ -73,28 +81,26 @@ function DownloadInvoice() {
             />
           </div>
           <div className="dl-buttons">
-
-          
-          <Button
-            variant="contained"
-            type="button"
-            id="save-xl"
-            startIcon={<InsertDriveFileIcon />}
-            onClick={() => onDownload("XL")}
-            disabled={search === "" || toDate === null || fromDate === null}
-          >
-            Download Excel
-          </Button>
-          <Button
-            variant="contained"
-            type="button"
-            id="save-pdf"
-            startIcon={<PictureAsPdfIcon />}
-            onClick={() => onDownload("PDF")}
-            disabled={search === "" || toDate === null || fromDate === null}
-          >
-            Download PDF
-          </Button>
+            <Button
+              variant="contained"
+              type="button"
+              id="save-xl"
+              startIcon={<InsertDriveFileIcon />}
+              onClick={() => onDownload("XL")}
+              disabled={search === "" || toDate === null || fromDate === null}
+            >
+              Download Excel
+            </Button>
+            <Button
+              variant="contained"
+              type="button"
+              id="save-pdf"
+              startIcon={<PictureAsPdfIcon />}
+              onClick={() => onDownload("PDF")}
+              disabled={search === "" || toDate === null || fromDate === null}
+            >
+              Download PDF
+            </Button>
           </div>
         </Paper>
       </Box>
