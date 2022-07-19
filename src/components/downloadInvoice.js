@@ -35,7 +35,8 @@ function DownloadInvoice() {
   };
 
   const onDownload = async (type) => {
-    const path = "api/v1/purchase-order/download-purchase-orders";
+    const fileType = type === "pdf" ? "-pdf" : "";
+    const path = `api/v1/purchase-order/download${fileType}-purchase-orders`;
     const res = await fetch(
       `${API_URL}/${path}?ingst=${searchValue}&fromDate=${fromDate}&toDate=${toDate}`,
       {
@@ -43,12 +44,20 @@ function DownloadInvoice() {
         headers: HEADERS,
       }
     )
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.error(err))
-      .finally(() => {
-        clearForm();
-      });
+      .then((response) => {
+        response.blob().then((blob) => {
+          const link = document.createElement("a");
+          const url = URL.createObjectURL(blob);
+          console.log(url);
+          link.href = url;
+          link.download = `${searchValue}_${fromDate}_${toDate}.${
+            type === "pdf" ? type : "xls"
+          }`;
+          link.click();
+          clearForm();
+        });
+      })
+      .catch((err) => console.error(err));
   };
 
   return (
@@ -105,7 +114,7 @@ function DownloadInvoice() {
               type="button"
               id="save-xl"
               startIcon={<InsertDriveFileIcon />}
-              onClick={() => onDownload("XL")}
+              onClick={() => onDownload("xls")}
               disabled={search === "" || toDate === "" || fromDate === ""}
             >
               Download Excel
@@ -115,7 +124,7 @@ function DownloadInvoice() {
               type="button"
               id="save-pdf"
               startIcon={<PictureAsPdfIcon />}
-              onClick={() => onDownload("PDF")}
+              onClick={() => onDownload("pdf")}
               disabled={search === "" || toDate === "" || fromDate === ""}
             >
               Download PDF
