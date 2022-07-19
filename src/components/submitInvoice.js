@@ -7,10 +7,8 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import SearchIcon from "@mui/icons-material/Search";
 import { API_URL, HEADERS } from "../constants";
 import { IconButton } from "@mui/material";
-import CustomAlert from "./customAlert";
 
 function SubmitInvoice() {
   const [billTo, setbillTo] = useState("");
@@ -103,7 +101,6 @@ function SubmitInvoice() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        setApiMsg();
         clearForm();
       });
   };
