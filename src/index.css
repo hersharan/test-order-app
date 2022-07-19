@@ -5,7 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #343434;
+  background: #838383;
 }
 
 code {
@@ -13,3 +13,6 @@ code {
     monospace;
 }
 
+.MuiPaper-root{
+  padding: 15px;
+}

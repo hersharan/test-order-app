@@ -6,14 +6,20 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { HEADERS } from "../constants";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
+import { API_URL, HEADERS } from "../constants";
 
 function DownloadInvoice() {
   const [search, setSearch] = useState("");
   const [searchValue, setSearchValue] = useState("");
-  const [fromDate, setFromDate] = useState(null);
-  const [toDate, setToDate] = useState(null);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const handleFromDate = (e) => {
     setFromDate(e.target.value);
   };
@@ -21,27 +27,40 @@ function DownloadInvoice() {
     setToDate(e.target.value);
   };
 
+  const clearForm = () => {
+    setSearch("");
+    setSearchValue("");
+    setFromDate("");
+    setToDate("");
+  };
+
   const onDownload = async (type) => {
-    const url = "https://c0a3-103-208-71-81.in.ngrok.io";
     const path = "api/v1/purchase-order/download-purchase-orders";
     const res = await fetch(
-      `${url}/${path}?ingst=${searchValue}&fromDate=${fromDate}&toDate=${toDate}`,
+      `${API_URL}/${path}?ingst=${searchValue}&fromDate=${fromDate}&toDate=${toDate}`,
       {
         method: "GET",
         headers: HEADERS,
       }
     )
       .then((response) => response.json())
-      .then((data) => console.log(data));
+      .then((data) => console.log(data))
+      .catch((err) => console.error(err))
+      .finally(() => {
+        clearForm();
+      });
   };
 
   return (
     <Fragment>
       <Box className="dl-invoice-box">
         <Paper elevation={3}>
+          <Typography variant="h3" component="div" gutterBottom>
+            Download Invoice
+          </Typography>
           <div className="dl-form">
             <FormControl className="search-dropdown">
-              <InputLabel id="search-label">Search INGST</InputLabel>
+              <InputLabel id="search-label">Search</InputLabel>
               <Select
                 labelId="search-label"
                 id="search-invoice"
@@ -54,7 +73,7 @@ function DownloadInvoice() {
             </FormControl>
             <TextField
               id="search-value"
-              label={`Enter ${search}`}
+              label="Enter No."
               value={searchValue}
               required
               onChange={(e) => {
@@ -87,7 +106,7 @@ function DownloadInvoice() {
               id="save-xl"
               startIcon={<InsertDriveFileIcon />}
               onClick={() => onDownload("XL")}
-              disabled={search === "" || toDate === null || fromDate === null}
+              disabled={search === "" || toDate === "" || fromDate === ""}
             >
               Download Excel
             </Button>
@@ -97,7 +116,7 @@ function DownloadInvoice() {
               id="save-pdf"
               startIcon={<PictureAsPdfIcon />}
               onClick={() => onDownload("PDF")}
-              disabled={search === "" || toDate === null || fromDate === null}
+              disabled={search === "" || toDate === "" || fromDate === ""}
             >
               Download PDF
             </Button>
