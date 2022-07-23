@@ -4,10 +4,9 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { API_URL, HEADERS } from "../constants";
-import { IconButton } from "@mui/material";
+import GstItem from "./gstItem";
 
 function SubmitInvoice({ title = "" }) {
   const [billTo, setbillTo] = useState("");
@@ -20,21 +19,7 @@ function SubmitInvoice({ title = "" }) {
   const [inputList, setInputList] = useState([
     { particulars: "", hsnOrSacCode: "", unit: "", cost: "", gstRate: "" },
   ]);
-  //
-  const handleInputChange = (e, index) => {
-    const { name, value } = e.target;
-    const list = [...inputList];
-    list[index][name] = value;
-    setInputList(list);
-  };
 
-  //
-  const handleRemoveClick = (index) => {
-    const list = [...inputList];
-    list.splice(index, 1);
-    setInputList(list);
-  };
-  //
   const handleAddClick = () => {
     setInputList([
       ...inputList,
@@ -42,7 +27,17 @@ function SubmitInvoice({ title = "" }) {
     ]);
   };
 
-  //
+  const addItem = (name, index, value) => {
+    const list = [...inputList];
+    list[index][name] = value;
+    setInputList(list);
+  };
+
+  const removeItem = (index) => {
+    const list = [...inputList];
+    list.splice(index, 1);
+    setInputList(list);
+  };
 
   const handleshipChange = (e) => {
     setshipTo(e.target.value);
@@ -68,9 +63,7 @@ function SubmitInvoice({ title = "" }) {
   };
 
   const clearForm = () => {
-    setInputList([
-      { particulars: "", hsnOrSacCode: "", unit: "", cost: "", gstRate: "" },
-    ]);
+    setInputList([]);
     setbillTo("");
     setshipTo("");
     setsupplyPlace("");
@@ -92,21 +85,25 @@ function SubmitInvoice({ title = "" }) {
       billDate: billDate.toString(),
       items: inputList,
     };
-    await fetch(`${API_URL}/${path}`, {
-      method: "POST",
-      headers: HEADERS,
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        clearForm();
-      });
+    try {
+      await fetch(`${API_URL}/${path}`, {
+        method: "POST",
+        headers: HEADERS,
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          clearForm();
+        });
+    } catch {
+      clearForm();
+    }
   };
 
   return (
     <Paper elevation={3}>
       <div className="App">
-        <Typography variant="h3" component="div" gutterBottom>
+        <Typography variant="h4" component="div" gutterBottom>
           {title}
         </Typography>
         <form
@@ -116,143 +113,89 @@ function SubmitInvoice({ title = "" }) {
           }}
         >
           <div className="gst-form">
-            <div className="w-2/5">
-              <TextField
-                id="bill-to"
-                label="Bill To"
-                value={billTo}
-                required
-                onChange={(e) => {
-                  handlebillto(e);
-                }}
-                multiline
-                rows={4}
-              />
+            <TextField
+              id="bill-to"
+              label="Bill To"
+              value={billTo}
+              required
+              onChange={(e) => {
+                handlebillto(e);
+              }}
+              multiline
+              rows={4}
+            />
+            <TextField
+              id="ship-to"
+              label="Ship To"
+              value={shipTo}
+              required
+              onChange={(e) => {
+                handleshipChange(e);
+              }}
+              multiline
+              rows={4}
+            />
+            <TextField
+              id="ship-to"
+              label="Supply Place"
+              value={supplyPlace}
+              required
+              onChange={(e) => {
+                handleplaceChange(e);
+              }}
+            />
+            <TextField
+              id="pan"
+              label="Pan"
+              value={pan}
+              required
+              onChange={(e) => {
+                handlepanChange(e);
+              }}
+            />
+            <TextField
+              id="ship-to"
+              label="GSTIN No."
+              value={gstIn}
+              required
+              onChange={(e) => {
+                handlegstInChange(e);
+              }}
+            />
 
-              <br />
-              <TextField
-                id="ship-to"
-                label="Ship To"
-                value={shipTo}
-                required
-                onChange={(e) => {
-                  handleshipChange(e);
-                }}
-                multiline
-                rows={4}
-              />
-              <br />
-
-              <TextField
-                id="ship-to"
-                label="Supply Place"
-                value={supplyPlace}
-                required
-                onChange={(e) => {
-                  handleplaceChange(e);
-                }}
-              />
-              <br />
-
-              <TextField
-                id="pan"
-                label="Pan"
-                value={pan}
-                required
-                onChange={(e) => {
-                  handlepanChange(e);
-                }}
-              />
-              <br />
-              <TextField
-                id="ship-to"
-                label="GSTIN No."
-                value={gstIn}
-                required
-                onChange={(e) => {
-                  handlegstInChange(e);
-                }}
-              />
-              <br />
-            </div>
-            <div className="w-2/5">
-              <TextField
-                id="ship-to"
-                label="Bill No."
-                value={billNo}
-                required
-                onChange={(e) => {
-                  handlesBillNoChange(e);
-                }}
-              />
-              <br />
-              <TextField
-                label="Bill Date"
-                value={billDate}
-                required
-                onChange={(e) => {
-                  handlebillDate(e);
-                }}
-                type="date"
-              />
-              <br />
-            </div>
+            <TextField
+              id="ship-to"
+              label="Bill No."
+              value={billNo}
+              required
+              onChange={(e) => {
+                handlesBillNoChange(e);
+              }}
+            />
+            <TextField
+              label="Bill Date"
+              value={billDate}
+              required
+              onChange={(e) => {
+                handlebillDate(e);
+              }}
+              type="date"
+            />
           </div>
           <div className="AppItems">
-            <Typography variant="h4" component="div" gutterBottom>
+            <Typography variant="h5" component="div" gutterBottom>
               Item Details
             </Typography>
             {inputList.map((x, i) => {
               return (
-                <div className="box" key={`${x.name}_${i}`}>
-                  <TextField
-                    name="particulars"
-                    id="ship-to"
-                    placeholder="Enter Particulars"
-                    value={x.particulars}
-                    onChange={(e) => handleInputChange(e, i)}
-                    multiline
-                    maxRows={4}
-                  />
-                  <TextField
-                    className="ml10"
-                    name="hsnOrSacCode"
-                    placeholder="Enter HSN/SAC Code"
-                    value={x.hsnOrSacCode}
-                    onChange={(e) => handleInputChange(e, i)}
-                  />
-                  <TextField
-                    name="unit"
-                    placeholder="Enter Unit"
-                    value={x.unit}
-                    onChange={(e) => handleInputChange(e, i)}
-                  />
-                  <TextField
-                    className="ml10"
-                    name="cost"
-                    placeholder="Enter Cost"
-                    value={x.cost}
-                    onChange={(e) => handleInputChange(e, i)}
-                  />
-                  <TextField
-                    className="ml10"
-                    name="gstRate"
-                    placeholder="Enter GST Rate"
-                    value={x.gstRate}
-                    onChange={(e) => handleInputChange(e, i)}
-                  />
-                  <div className="btn-box">
-                    {inputList.length !== 1 && (
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => handleRemoveClick(i)}
-                        color="error"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    )}
-                  </div>
-                </div>
+                <GstItem
+                  key={`${x.name}_${i}`}
+                  item={x}
+                  idx={i}
+                  inputList={inputList}
+                  removeItem={removeItem}
+                  addItem={addItem}
+                />
               );
             })}
           </div>

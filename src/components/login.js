@@ -61,7 +61,7 @@ function Login() {
     <Fragment>
       <Box className="login-box">
         <Paper elevation={3}>
-          <Typography variant="h3" component="div" gutterBottom>
+          <Typography variant="h4" component="div" gutterBottom>
             Login
           </Typography>
           <div className="login-form">

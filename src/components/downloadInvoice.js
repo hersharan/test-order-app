@@ -86,7 +86,7 @@ function DownloadInvoice() {
   const onDownload = async (type) => {
     const fileType = type === "pdf" ? "-pdf" : "";
     const path = `api/v1/purchase-order/download${fileType}-purchase-orders`;
-    const res = await fetch(
+    await fetch(
       `${API_URL}/${path}?ingst=${searchValue}&fromDate=${fromDate}&toDate=${toDate}`,
       {
         method: "GET",
@@ -97,7 +97,6 @@ function DownloadInvoice() {
         response.blob().then((blob) => {
           const link = document.createElement("a");
           const url = URL.createObjectURL(blob);
-          console.log(url);
           link.href = url;
           link.download = `${searchValue}_${fromDate}_${toDate}.${
             type === "pdf" ? type : "xls"
@@ -113,7 +112,7 @@ function DownloadInvoice() {
     <Fragment>
       <Box className="dl-invoice-box">
         <Paper elevation={3}>
-          <Typography variant="h3" component="div" gutterBottom>
+          <Typography variant="h4" component="div" gutterBottom>
             Download Invoice
           </Typography>
           <div className="dl-form">
@@ -131,6 +130,7 @@ function DownloadInvoice() {
               {errors.search && <FormHelperText>Select a type</FormHelperText>}
             </FormControl>
             <TextField
+              className="search-no"
               id="search-value"
               label="Enter No."
               value={searchValue}
