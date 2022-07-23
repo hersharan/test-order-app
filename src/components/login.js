@@ -11,8 +11,32 @@ import { useAuth } from "../auth/auth";
 function Login() {
   const { onLogin } = useAuth();
 
-  const [userName, setUserName] = useState(null);
-  const [password, setPassword] = useState(null);
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({
+    userName: false,
+    password: false,
+  });
+
+  const handleUName = (e) => {
+    const { value } = e.target;
+    setUserName(value);
+    const newErrors = {
+      ...errors,
+      userName: !value || value === "",
+    };
+    setErrors(newErrors);
+  };
+
+  const handlePass = (e) => {
+    const { value } = e.target;
+    setPassword(value);
+    const newErrors = {
+      ...errors,
+      password: !value || value === "",
+    };
+    setErrors(newErrors);
+  };
 
   const handleLogin = async () => {
     onLogin({ userName, password });
@@ -31,11 +55,9 @@ function Login() {
               label="Username"
               value={userName}
               required
-              onChange={(e) => {
-                setUserName(e.target.value);
-              }}
-              error={userName === ""}
-              helperText={ userName=== "" && "Enter a username"}
+              onChange={handleUName}
+              error={errors.userName}
+              helperText={errors.userName && "Enter a username"}
             />
             <TextField
               id="password"
@@ -43,11 +65,9 @@ function Login() {
               value={password}
               required
               type="password"
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-              error={password === ""}
-              helperText={ password=== "" && "Enter a password"}
+              onChange={handlePass}
+              error={errors.password}
+              helperText={errors.password && "Enter a password"}
             />
           </div>
           <div className="login-buttons">

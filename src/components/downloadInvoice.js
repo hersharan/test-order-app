@@ -8,6 +8,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import {
   FormControl,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
@@ -20,18 +21,66 @@ function DownloadInvoice() {
   const [searchValue, setSearchValue] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [errors, setErrors] = useState({
+    search: false,
+    searchValue: false,
+    fromDate: false,
+    toDate: false,
+  });
   const handleFromDate = (e) => {
-    setFromDate(e.target.value);
+    const { value } = e.target;
+    const today = new Date();
+    const selectedDate = new Date(value);
+    setFromDate(value);
+    const newErrors = {
+      ...errors,
+      fromDate: !value || value === "" || selectedDate >= today,
+    };
+    setErrors(newErrors);
   };
   const handleToDate = (e) => {
-    setToDate(e.target.value);
+    const { value } = e.target;
+    const today = new Date();
+    const selectedDate = new Date(value);
+    setToDate(value);
+    const newErrors = {
+      ...errors,
+      toDate: !value || value === "" || selectedDate >= today,
+    };
+    setErrors(newErrors);
   };
+
+  const handleSearchValue = (e) => {
+    const { value } = e.target;
+    setSearchValue(value);
+    const newErrors = {
+      ...errors,
+      searchValue: !value || value === "",
+    };
+    setErrors(newErrors);
+  };
+
+  const handleType = (e)=>{
+    const { value } = e.target;
+    setSearch(value);
+    const newErrors = {
+      ...errors,
+      search: !value || value === "",
+    };
+    setErrors(newErrors);
+  }
 
   const clearForm = () => {
     setSearch("");
     setSearchValue("");
     setFromDate("");
     setToDate("");
+    setErrors({
+      search: false,
+      searchValue: false,
+      fromDate: false,
+      toDate: false,
+    });
   };
 
   const onDownload = async (type) => {
@@ -68,26 +117,27 @@ function DownloadInvoice() {
             Download Invoice
           </Typography>
           <div className="dl-form">
-            <FormControl className="search-dropdown">
+            <FormControl className="search-dropdown" error={errors.search}>
               <InputLabel id="search-label">Search</InputLabel>
               <Select
                 labelId="search-label"
                 id="search-invoice"
                 value={search}
                 label="Search"
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={handleType}
               >
                 <MenuItem value="GSTIN NO.">GSTIN No.</MenuItem>
               </Select>
+              {errors.search && <FormHelperText>Select a type</FormHelperText>}
             </FormControl>
             <TextField
               id="search-value"
               label="Enter No."
               value={searchValue}
               required
-              onChange={(e) => {
-                setSearchValue(e.target.value);
-              }}
+              onChange={handleSearchValue}
+              error={errors.searchValue}
+              helperText={errors.searchValue && "Enter a No."}
             />
             <TextField
               label="From Date"
@@ -97,6 +147,8 @@ function DownloadInvoice() {
                 handleFromDate(e);
               }}
               type="date"
+              error={errors.fromDate}
+              helperText={errors.fromDate && "Enter a valid date"}
             />
             <TextField
               label="To Date"
@@ -106,6 +158,8 @@ function DownloadInvoice() {
                 handleToDate(e);
               }}
               type="date"
+              error={errors.toDate}
+              helperText={errors.toDate && "Enter a valid date"}
             />
           </div>
           <div className="dl-buttons">
