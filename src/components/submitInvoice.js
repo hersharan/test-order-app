@@ -19,6 +19,15 @@ function SubmitInvoice({ title = "" }) {
   const [inputList, setInputList] = useState([
     { particulars: "", hsnOrSacCode: "", unit: "", cost: "", gstRate: "" },
   ]);
+  const [errors, setErrors] = useState({
+    billTo: false,
+    shipTo: false,
+    supplyPlace: false,
+    pan: false,
+    gstIn: false,
+    billDate: false,
+    billNo: false,
+  });
 
   const handleAddClick = () => {
     setInputList([
@@ -40,30 +49,74 @@ function SubmitInvoice({ title = "" }) {
   };
 
   const handleshipChange = (e) => {
-    setshipTo(e.target.value);
+    const { value } = e.target;
+    setshipTo(value);
+    const newErrors = {
+      ...errors,
+      shipTo: !value || value === "",
+    };
+    setErrors(newErrors);
   };
   const handlesBillNoChange = (e) => {
-    setBillNo(e.target.value);
+    const { value } = e.target;
+    setBillNo(value);
+    const newErrors = {
+      ...errors,
+      billNo: !value || value === "",
+    };
+    setErrors(newErrors);
   };
   const handleplaceChange = (e) => {
-    setsupplyPlace(e.target.value);
+    const { value } = e.target;
+    setsupplyPlace(value);
+    const newErrors = {
+      ...errors,
+      supplyPlace: !value || value === "",
+    };
+    setErrors(newErrors);
   };
   const handlepanChange = (e) => {
-    setPan(e.target.value);
+    const { value } = e.target;
+    setPan(value);
+    const newErrors = {
+      ...errors,
+      pan: !value || value === "",
+    };
+    setErrors(newErrors);
   };
   const handlegstInChange = (e) => {
-    setgstIn(e.target.value);
+    const { value } = e.target;
+    setgstIn(value);
+    const newErrors = {
+      ...errors,
+      gstIn: !value || value === "",
+    };
+    setErrors(newErrors);
   };
 
   const handlebillto = (e) => {
-    setbillTo(e.target.value);
+    const { value } = e.target;
+    setbillTo(value);
+    const newErrors = {
+      ...errors,
+      billTo: !value || value === "",
+    };
+    setErrors(newErrors);
   };
   const handlebillDate = (e) => {
-    setBillDate(e.target.value);
+    const { value } = e.target;
+    setBillDate(value);
+    const newErrors = {
+      ...errors,
+      billDate: !value || value === "",
+    };
+    setErrors(newErrors);
   };
 
   const clearForm = () => {
-    setInputList([]);
+    setInputList([
+      { particulars: "", hsnOrSacCode: "", unit: "", cost: "", gstRate: "" },
+    ]);
     setbillTo("");
     setshipTo("");
     setsupplyPlace("");
@@ -100,6 +153,32 @@ function SubmitInvoice({ title = "" }) {
     }
   };
 
+  const getIfValuesEmpty = () => {
+    if (
+      billTo === "" ||
+      shipTo === "" ||
+      supplyPlace === "" ||
+      pan === "" ||
+      gstIn === "" ||
+      billNo === "" ||
+      billDate === ""
+    ) {
+      return true;
+    }
+    if (
+      inputList.length === 0 ||
+      (inputList.length > 0 &&
+        (inputList[0].particulars === "" ||
+          inputList[0].hsnOrSacCode === "" ||
+          inputList[0].unit === "" ||
+          inputList[0].cost === "" ||
+          inputList[0].gstRate === ""))
+    ) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <Paper elevation={3}>
       <div className="App">
@@ -123,6 +202,9 @@ function SubmitInvoice({ title = "" }) {
               }}
               multiline
               rows={4}
+              name="billTo"
+              error={errors.billTo}
+              helperText={errors.billTo && "Enter a value"}
             />
             <TextField
               id="ship-to"
@@ -134,6 +216,9 @@ function SubmitInvoice({ title = "" }) {
               }}
               multiline
               rows={4}
+              name="shipTo"
+              error={errors.shipTo}
+              helperText={errors.shipTo && "Enter a value"}
             />
             <TextField
               id="ship-to"
@@ -143,6 +228,9 @@ function SubmitInvoice({ title = "" }) {
               onChange={(e) => {
                 handleplaceChange(e);
               }}
+              name="supplyPlace"
+              error={errors.supplyPlace}
+              helperText={errors.supplyPlace && "Enter a value"}
             />
             <TextField
               id="pan"
@@ -152,6 +240,9 @@ function SubmitInvoice({ title = "" }) {
               onChange={(e) => {
                 handlepanChange(e);
               }}
+              name="pan"
+              error={errors.pan}
+              helperText={errors.pan && "Enter a value"}
             />
             <TextField
               id="ship-to"
@@ -161,6 +252,9 @@ function SubmitInvoice({ title = "" }) {
               onChange={(e) => {
                 handlegstInChange(e);
               }}
+              name="gstIn"
+              error={errors.gstIn}
+              helperText={errors.gstIn && "Enter a value"}
             />
 
             <TextField
@@ -171,6 +265,9 @@ function SubmitInvoice({ title = "" }) {
               onChange={(e) => {
                 handlesBillNoChange(e);
               }}
+              name="billNo"
+              error={errors.billNo}
+              helperText={errors.billNo && "Enter a value"}
             />
             <TextField
               label="Bill Date"
@@ -180,6 +277,9 @@ function SubmitInvoice({ title = "" }) {
                 handlebillDate(e);
               }}
               type="date"
+              name="billDate"
+              error={errors.billDate}
+              helperText={errors.billDate && "Enter a value"}
             />
           </div>
           <div className="AppItems">
@@ -217,6 +317,9 @@ function SubmitInvoice({ title = "" }) {
           className="submit-btn"
           id="Submit"
           onClick={handleSubmit}
+          disabled={
+            Object.values(errors).some((item) => item) || getIfValuesEmpty()
+          }
         >
           Submit
         </Button>
