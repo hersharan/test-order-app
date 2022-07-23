@@ -5,7 +5,7 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import LoginIcon from "@mui/icons-material/Login";
-import { Typography } from "@mui/material";
+import { FormHelperText, Typography } from "@mui/material";
 import { useAuth } from "../auth/auth";
 
 function Login() {
@@ -16,6 +16,10 @@ function Login() {
   const [errors, setErrors] = useState({
     userName: false,
     password: false,
+  });
+  const [apiError, setApiError] = useState({
+    status: false,
+    message: null,
   });
 
   const handleUName = (e) => {
@@ -39,7 +43,18 @@ function Login() {
   };
 
   const handleLogin = async () => {
-    onLogin({ userName, password });
+    try {
+      const resp = await onLogin({ userName, password });
+      setApiError({
+        status: resp.status,
+        message: resp.message,
+      });
+    } catch {
+      setApiError({
+        status: false,
+        message: "Something went wrong",
+      });
+    }
   };
 
   return (
@@ -50,6 +65,11 @@ function Login() {
             Login
           </Typography>
           <div className="login-form">
+            {apiError.status === false &&
+              apiError.message !== "" &&
+              apiError.message !== null && (
+                <FormHelperText error class="login-err">{apiError.message}</FormHelperText>
+              )}
             <TextField
               id="username"
               label="Username"

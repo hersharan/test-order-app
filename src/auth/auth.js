@@ -12,17 +12,23 @@ const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("authToken") || null);
 
   const handleLogin = async (data) => {
-    const token = await fetch(`${API_URL}/api/v1/user/login`, {
+    const resp = await fetch(`${API_URL}/api/v1/user/login`, {
       method: "POST",
       headers: HEADERS,
       body: JSON.stringify(data),
-    });
-    if (token && token.status) {
-      const authToken = window.btoa(JSON.stringify(data));
-      localStorage.setItem("authToken", authToken);
-      setToken(authToken);
-      navigate("/dashboard");
-    }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && data.status) {
+          const authToken = window.btoa(JSON.stringify(data));
+          localStorage.setItem("authToken", authToken);
+          setToken(authToken);
+          navigate("/dashboard");
+        } else {
+          return { status: data.status, message: data.errorMessage };
+        }
+      });
+    return resp;
   };
 
   const handleLogout = () => {

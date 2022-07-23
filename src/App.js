@@ -2,7 +2,7 @@ import "./App.css";
 import React from "react";
 import DownloadInvoice from "./components/downloadInvoice";
 import AppHeader from "./components/header";
-import SubmitInvoice from "./components/submitInvoice";
+import Invoice from "./components/invoice";
 import { Route, Routes } from "react-router-dom";
 import Login from "./components/login";
 import AuthProvider from "./auth/auth";
@@ -19,7 +19,7 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <SubmitInvoice />
+                <Invoice />
               </ProtectedRoute>
             }
           />
@@ -27,7 +27,7 @@ function App() {
             path="submit"
             element={
               <ProtectedRoute>
-                <SubmitInvoice />
+                <Invoice />
               </ProtectedRoute>
             }
           />
@@ -51,7 +51,7 @@ function App() {
             path="*"
             element={
               <ProtectedRoute>
-                <SubmitInvoice />
+                <Invoice />
               </ProtectedRoute>
             }
           />

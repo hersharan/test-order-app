@@ -134,3 +134,9 @@ input[type="date"]:focus::-webkit-datetime-edit {
 .login-form .MuiFormControl-root.MuiTextField-root{
   margin: 30px;
 }
+
+.login-err{
+  font-weight: 600;
+  font-size: 1rem;
+  color: red;
+}
