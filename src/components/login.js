@@ -9,14 +9,13 @@ import { Typography } from "@mui/material";
 import { useAuth } from "../auth/auth";
 
 function Login() {
-
   const { onLogin } = useAuth();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [userName, setUserName] = useState(null);
+  const [password, setPassword] = useState(null);
 
   const handleLogin = async () => {
-    onLogin();
+    onLogin({ userName, password });
   };
 
   return (
@@ -30,20 +29,25 @@ function Login() {
             <TextField
               id="username"
               label="Username"
-              value={username}
+              value={userName}
               required
               onChange={(e) => {
-                setUsername(e.target.value);
+                setUserName(e.target.value);
               }}
+              error={userName === ""}
+              helperText={ userName=== "" && "Enter a username"}
             />
             <TextField
               id="password"
               label="Password"
               value={password}
               required
+              type="password"
               onChange={(e) => {
                 setPassword(e.target.value);
               }}
+              error={password === ""}
+              helperText={ password=== "" && "Enter a password"}
             />
           </div>
           <div className="login-buttons">
@@ -53,7 +57,7 @@ function Login() {
               id="login-btn"
               startIcon={<LoginIcon />}
               onClick={handleLogin}
-              disabled={username === "" || password === ""}
+              disabled={userName === "" || password === ""}
             >
               Login
             </Button>

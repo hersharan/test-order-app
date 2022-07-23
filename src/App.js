@@ -7,6 +7,7 @@ import { Route, Routes } from "react-router-dom";
 import Login from "./components/login";
 import AuthProvider from "./auth/auth";
 import ProtectedRoute from "./auth/protectedRoute";
+import PublicRoute from "./auth/publicRoute";
 
 function App() {
   return (
@@ -38,7 +39,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="login" element={<Login />} />
+          <Route
+            path="login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
           <Route
             path="*"
             element={

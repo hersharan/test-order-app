@@ -1,40 +1,55 @@
-import React from "react";
-import { Routes, Route, NavLink, useNavigate } from "react-router-dom";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { API_URL, HEADERS } from "../constants";
 
-const AuthContext = React.createContext(null);
+const AuthContext = createContext(null);
 
-export const useAuth = () => {
-  return React.useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
-  const [token, setToken] = React.useState(null);
+  const [token, setToken] = useState(localStorage.getItem("authToken") || null);
 
-  const fakeAuth = () =>
-    new Promise((resolve) => {
-      setTimeout(() => resolve("2342f2f1d131rf12"), 250);
+  const handleLogin = async (data) => {
+    const token = await fetch(`${API_URL}/api/v1/user/login`, {
+      method: "POST",
+      headers: HEADERS,
+      body: JSON.stringify(data),
     });
-
-  const handleLogin = async () => {
-    const token = await fakeAuth();
-
-    setToken(token);
-    navigate("/dashboard");
+    if (token && token.status) {
+      const authToken = window.btoa(JSON.stringify(data));
+      localStorage.setItem("authToken", authToken);
+      setToken(authToken);
+      navigate("/dashboard");
+    }
   };
 
   const handleLogout = () => {
+    localStorage.removeItem("authToken");
     setToken(null);
   };
 
-  const value = {
-    token,
-    onLogin: handleLogin,
-    onLogout: handleLogout,
+  const getToken = async () => {
+    const authToken = await localStorage.getItem("authToken");
+    setToken(authToken);
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  useEffect(() => {
+    getToken();
+  }, []);
+
+  return (
+    <AuthContext.Provider
+      value={{
+        token,
+        onLogin: handleLogin,
+        onLogout: handleLogout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-export default AuthProvider
+export default AuthProvider;
