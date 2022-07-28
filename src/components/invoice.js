@@ -3,6 +3,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import SubmitInvoice from "./submitInvoice";
 import { Tab, Tabs, Typography } from "@mui/material";
+import DownloadInvoice from "./downloadInvoice";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -35,12 +36,16 @@ function Invoice() {
       <Tabs value={value} onChange={handleChange} aria-label="invoices">
         <Tab label="Purchase Order" />
         <Tab label="Stocks Entry" />
+        <Tab label="Download Invoice"/>
       </Tabs>
       <TabPanel value={value} index={0}>
         <SubmitInvoice title="Purchase Order" />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <SubmitInvoice title="Stocks Entry" />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <DownloadInvoice />
       </TabPanel>
     </Box>
   );

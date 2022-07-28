@@ -15,8 +15,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/auth";
 
 const pages = [
-  { name: "Submit Invoice", link: "/submit" },
-  { name: "Download Invoice", link: "/download" },
+  // { name: "Submit Invoice", link: "/submit" },
+  // { name: "Download Invoice", link: "/download" },
 ];
 
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
