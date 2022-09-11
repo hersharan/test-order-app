@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { API_URL, HEADERS } from "../constants";
 import GstItem from "./gstItem";
+import CustomAlert from "./customAlert";
 
 function SubmitInvoice({ title = "" }) {
   const [billTo, setbillTo] = useState("");
@@ -14,10 +15,10 @@ function SubmitInvoice({ title = "" }) {
   const [supplyPlace, setsupplyPlace] = useState("");
   const [pan, setPan] = useState("");
   const [gstIn, setgstIn] = useState("");
-  const [billDate, setBillDate] = useState("");
+  const [billDate, setBillDate] = useState(new Date().toISOString().substr(0, 10));
   const [billNo, setBillNo] = useState("");
   const [inputList, setInputList] = useState([
-    { particulars: "", hsnOrSacCode: "", unit: "", cost: "", gstRate: "" },
+    { name: "", hsnOrSacCode: "", unit: "", cost: "", gstRate: "" },
   ]);
   const [errors, setErrors] = useState({
     billTo: false,
@@ -29,10 +30,24 @@ function SubmitInvoice({ title = "" }) {
     billNo: false,
   });
 
+  const [alert, setAlert] = useState({
+    type: null,
+    message: null,
+    show: false,
+  });
+
+  const closeAlert = () => {
+    setAlert({
+      type: null,
+      message: null,
+      show: false,
+    });
+  };
+
   const handleAddClick = () => {
     setInputList([
       ...inputList,
-      { particulars: "", hsnOrSacCode: "", unit: "", cost: "", gstRate: "" },
+      { name: "", hsnOrSacCode: "", unit: "", cost: "", gstRate: "" },
     ]);
   };
 
@@ -115,14 +130,14 @@ function SubmitInvoice({ title = "" }) {
 
   const clearForm = () => {
     setInputList([
-      { particulars: "", hsnOrSacCode: "", unit: "", cost: "", gstRate: "" },
+      { name: "", hsnOrSacCode: "", unit: "", cost: "", gstRate: "" },
     ]);
     setbillTo("");
     setshipTo("");
     setsupplyPlace("");
     setPan("");
     setgstIn("");
-    setBillDate("");
+    setBillDate(new Date().toISOString().substr(0, 10));
     setBillNo("");
   };
 
@@ -146,9 +161,19 @@ function SubmitInvoice({ title = "" }) {
       })
         .then((response) => response.json())
         .then((data) => {
+          setAlert({
+            type: 'success',
+            message: 'Saved Successfully.',
+            show: true,
+          });
           clearForm();
         });
     } catch {
+      setAlert({
+        type: 'error',
+        message: 'Encountered an Error, Please try again.',
+        show: true,
+      });
       clearForm();
     }
   };
@@ -168,7 +193,7 @@ function SubmitInvoice({ title = "" }) {
     if (
       inputList.length === 0 ||
       (inputList.length > 0 &&
-        (inputList[0].particulars === "" ||
+        (inputList[0].name === "" ||
           inputList[0].hsnOrSacCode === "" ||
           inputList[0].unit === "" ||
           inputList[0].cost === "" ||
@@ -194,7 +219,7 @@ function SubmitInvoice({ title = "" }) {
           <div className="gst-form">
             <TextField
               id="bill-to"
-              label="Bill To"
+              label="Bill From"
               value={billTo}
               required
               onChange={(e) => {
@@ -289,7 +314,7 @@ function SubmitInvoice({ title = "" }) {
             {inputList.map((x, i) => {
               return (
                 <GstItem
-                  key={`${x.name}_${i}`}
+                  key={`itemList_${i}`}
                   item={x}
                   idx={i}
                   inputList={inputList}
@@ -324,6 +349,14 @@ function SubmitInvoice({ title = "" }) {
           Submit
         </Button>
       </div>
+      {alert.show && (
+        <CustomAlert
+          type={alert.type}
+          message={alert.message}
+          show={alert.show}
+          handleClose={closeAlert}
+        />
+      )}
     </Paper>
   );
 }

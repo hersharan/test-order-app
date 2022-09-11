@@ -19,14 +19,15 @@ import { API_URL, HEADERS } from "../constants";
 function DownloadInvoice() {
   const [search, setSearch] = useState("");
   const [searchValue, setSearchValue] = useState("");
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
+  const [fromDate, setFromDate] = useState(new Date().toISOString().substr(0, 10));
+  const [toDate, setToDate] = useState(new Date().toISOString().substr(0, 10));
   const [errors, setErrors] = useState({
     search: false,
     searchValue: false,
     fromDate: false,
     toDate: false,
   });
+
   const handleFromDate = (e) => {
     const { value } = e.target;
     const today = new Date();
@@ -60,7 +61,7 @@ function DownloadInvoice() {
     setErrors(newErrors);
   };
 
-  const handleType = (e)=>{
+  const handleType = (e) => {
     const { value } = e.target;
     setSearch(value);
     const newErrors = {
@@ -68,13 +69,13 @@ function DownloadInvoice() {
       search: !value || value === "",
     };
     setErrors(newErrors);
-  }
+  };
 
   const clearForm = () => {
     setSearch("");
     setSearchValue("");
-    setFromDate("");
-    setToDate("");
+    setFromDate(new Date().toISOString().substr(0, 10));
+    setToDate(new Date().toISOString().substr(0, 10));
     setErrors({
       search: false,
       searchValue: false,
@@ -113,7 +114,7 @@ function DownloadInvoice() {
       <Box className="dl-invoice-box">
         <Paper elevation={3}>
           <Typography variant="h4" component="div" gutterBottom>
-            Download Invoice
+            Summary Invoice
           </Typography>
           <div className="dl-form">
             <FormControl className="search-dropdown" error={errors.search}>

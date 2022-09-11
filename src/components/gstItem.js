@@ -34,15 +34,15 @@ function GstItem({ item, idx, inputList, removeItem, addItem }) {
   return (
     <div className="box">
       <TextField
-        name="particulars"
+        name="name"
         id="ship-to"
         placeholder="Enter Particulars"
-        value={itemInput.particulars}
+        value={itemInput.name}
         onChange={(e) => handleInputChange(e, idx)}
         multiline
         maxRows={4}
-        error={errors.particulars}
-        helperText={errors.particulars && "Enter a value"}
+        error={errors.name}
+        helperText={errors.name && "Enter a value"}
       />
       <TextField
         className="ml10"

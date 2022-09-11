@@ -5,6 +5,6 @@ const HEADERS = {
   "Access-Control-Allow-Credentials": true,
 };
 
-const API_URL = "https://7139-103-208-71-70.in.ngrok.io"
+const API_URL = "http://gstcalcapp-env.eba-jkv75ekp.us-east-1.elasticbeanstalk.com"
 
 export { HEADERS, API_URL };

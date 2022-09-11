@@ -68,7 +68,7 @@ function Login() {
             {apiError.status === false &&
               apiError.message !== "" &&
               apiError.message !== null && (
-                <FormHelperText error class="login-err">{apiError.message}</FormHelperText>
+                <FormHelperText error className="login-err">{apiError.message}</FormHelperText>
               )}
             <TextField
               id="username"
