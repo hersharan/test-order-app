@@ -34,12 +34,12 @@ function Invoice() {
   return (
     <Box className="main-box">
       <Tabs value={value} onChange={handleChange} aria-label="invoices">
-        <Tab label="SELL BILL" />
+        <Tab label="SALE BILL" />
         <Tab label="PURCHASE BILL" />
         <Tab label="SUMMARY INVOICE"/>
       </Tabs>
       <TabPanel value={value} index={0}>
-        <SubmitInvoice title="Sell Bill" />
+        <SubmitInvoice title="Sale Bill" />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <SubmitInvoice title="Purchase Bill" />
